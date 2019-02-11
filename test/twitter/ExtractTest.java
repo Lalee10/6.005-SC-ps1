@@ -18,6 +18,12 @@ public class ExtractTest {
      * TODO: your testing strategies for these methods should go here.
      * See the ic03-testing exercise for examples of what a testing strategy comment looks like.
      * Make sure you have partitions.
+     * 
+     * Testing strategy:
+     * 
+     * Partitions:
+     * - NumOfTweets: 0, 1, 2, > 2
+     * - NumOfMentions: 0, 1, > 1
      */
     
     private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
@@ -33,7 +39,7 @@ public class ExtractTest {
         assert false; // make sure assertions are enabled with VM argument: -ea
     }
     
-    
+    // Testing NumOfTweets == 0
     @Test
     public void testGetTimespanZeroTweets() {
     	Timespan timespan = Extract.getTimespan(new ArrayList<Tweet>());
@@ -41,6 +47,7 @@ public class ExtractTest {
         assertEquals(timespan.getEnd(), Instant.MIN);         
     }
     
+    // Testing NumOfTweets == 1
     @Test
     public void testGetTimespanOneTweet() {
         Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1));
@@ -49,6 +56,7 @@ public class ExtractTest {
         assertEquals("Expected end", d1, timespan.getEnd());
     }
     
+    // Testing NumOfTweets == 2
     @Test
     public void testGetTimespanTwoTweets() {
         Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet2));
@@ -57,6 +65,7 @@ public class ExtractTest {
         assertEquals("expected end", d2, timespan.getEnd());
     }
     
+    // Testing NumOfTweets == 3
     @Test
     public void testGetTimespanGreaterThanTwoTweets() {
         Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet3));
@@ -65,13 +74,15 @@ public class ExtractTest {
         assertEquals("Expected end", d3, timespan.getEnd());
     }
     
+    // Testing NumOfMentions == 0
     @Test
     public void testGetMentionedUsersNoMention() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet1));
         
         assertTrue("Expected empty set", mentionedUsers.isEmpty());
     }
-    
+
+    // Testing NumOfMentions == 1
     @Test
     public void testGetMentionedUsersSingleMention() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet2));
@@ -79,7 +90,7 @@ public class ExtractTest {
         assertTrue("Expected username: `noshuhawk`", mentionedUsers.contains("noshuhawk"));
     }
     
-    
+    // Testing NumOfMentions == 2
     @Test
     public void testGetMentionedUsersMultipleMentions() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet3));
@@ -89,6 +100,7 @@ public class ExtractTest {
         		mentionedUsers.contains("noshuhawk"));
     }
     
+    // Testing repeated Mentions
     @Test
     public void testGetMentionedUsersRepeatedMentions() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet3));

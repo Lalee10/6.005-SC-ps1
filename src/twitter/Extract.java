@@ -31,14 +31,17 @@ public class Extract {
     	Instant start = Instant.MAX;
     	Instant end = Instant.MIN;
     	
+        // If no tweet is passed then return minTime 
     	if(tweets.size() == 0) {
     		return new Timespan(Instant.MIN, Instant.MIN);
     	}
     	
     	for(Tweet tweet: tweets){
+            // If minTime then assign as start
     		if(tweet.getTimestamp().compareTo(start) <= 0) {
     			start = tweet.getTimestamp();
     		}
+            // If maxtime then assign as end
     		if(tweet.getTimestamp().compareTo(end) >= 0) {
     			end = tweet.getTimestamp();
     		}
@@ -63,21 +66,25 @@ public class Extract {
      *         include a username at most once.
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        
+
+        // Create set to hold usernames        
     	Set<String> stringSet = new HashSet<String>();
     	
     	for(Tweet tweet: tweets) {
+            // Get the tweet text
         	String text = tweet.getText();
+
+            // Create a pattern to find Twitter username
         	Pattern pattern = Pattern.compile("(?<=^|(?<=[^a-zA-Z0-9-_\\.]))@([A-Za-z]+[A-Za-z0-9-_]+)");
         	Matcher matcher = pattern.matcher(text);
         	
+            // While the matcher find the pattern in the tweet
         	while(matcher.find()){
         		String username = text.substring(matcher.start() + 1, matcher.end());
         		stringSet.add(username.toLowerCase());
         	}
         }
-        return stringSet;
-        
+        return stringSet;    
     }
 
 }
