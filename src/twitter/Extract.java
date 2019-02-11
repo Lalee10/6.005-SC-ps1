@@ -65,7 +65,6 @@ public class Extract {
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
         
     	Set<String> stringSet = new HashSet<String>();
-        
     	
     	for(Tweet tweet: tweets) {
         	String text = tweet.getText();
@@ -73,11 +72,10 @@ public class Extract {
         	Matcher matcher = pattern.matcher(text);
         	
         	while(matcher.find()){
-        		String username = text.substring(matcher.start() +1, matcher.end());
-        		stringSet.add(username);
+        		String username = text.substring(matcher.start() + 1, matcher.end());
+        		stringSet.add(username.toLowerCase());
         	}
         }
-        
         return stringSet;
         
     }
