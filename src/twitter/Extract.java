@@ -5,6 +5,10 @@ package twitter;
 
 import java.util.List;
 import java.util.Set;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * Extract consists of methods that extract information from a list of tweets.
@@ -24,7 +28,23 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+    	Instant start = Instant.MAX;
+    	Instant end = Instant.MIN;
+    	
+    	if(tweets.size() == 0) {
+    		return new Timespan(Instant.MIN, Instant.MIN);
+    	}
+    	
+    	for(Tweet tweet: tweets){
+    		if(tweet.getTimestamp().compareTo(start) <= 0) {
+    			start = tweet.getTimestamp();
+    		}
+    		if(tweet.getTimestamp().compareTo(end) >= 0) {
+    			end = tweet.getTimestamp();
+    		}
+    	}
+    	
+    	return new Timespan(start, end);
     }
 
     /**
@@ -43,7 +63,23 @@ public class Extract {
      *         include a username at most once.
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        
+    	Set<String> stringSet = new HashSet<String>();
+        
+    	
+    	for(Tweet tweet: tweets) {
+        	String text = tweet.getText();
+        	Pattern pattern = Pattern.compile("(?<=^|(?<=[^a-zA-Z0-9-_\\.]))@([A-Za-z]+[A-Za-z0-9-_]+)");
+        	Matcher matcher = pattern.matcher(text);
+        	
+        	while(matcher.find()){
+        		String username = text.substring(matcher.start() +1, matcher.end());
+        		stringSet.add(username);
+        	}
+        }
+        
+        return stringSet;
+        
     }
 
 }
