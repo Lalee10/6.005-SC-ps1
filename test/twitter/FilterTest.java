@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -21,14 +22,21 @@ public class FilterTest {
     
     private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
     private static final Instant d2 = Instant.parse("2016-02-17T11:00:00Z");
+    private static final Instant d3 = Instant.parse("2016-02-17T12:00:00Z");
+    private static final Instant d4 = Instant.parse("2016-02-17T09:00:00Z");
     
     private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
     private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
+    private static final Tweet tweet3 = new Tweet(3, "alyssa", "yolo kid, simply yolo", d2);
+    private static final Tweet tweet4 = new Tweet(4, "bbitdiddle", "we live young, we live free", d4);
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
         assert false; // make sure assertions are enabled with VM argument: -ea
     }
+    
+    
+    
     
     @Test
     public void testWrittenByMultipleTweetsSingleResult() {
@@ -37,6 +45,24 @@ public class FilterTest {
         assertEquals("expected singleton list", 1, writtenBy.size());
         assertTrue("expected list to contain tweet", writtenBy.contains(tweet1));
     }
+    @Test
+    public void testWrittenByMultipleTweetsMultipleResult() {
+    	List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet1, tweet2, tweet3), "alyssa");
+        
+        assertEquals("expected doubleton list", 2, writtenBy.size());
+        assertTrue("expected list to contain tweets by author", 
+                writtenBy.containsAll(Arrays.asList(tweet1, tweet3)));
+    }
+    @Test
+    public void testWrittenBySingleTweetNoAuthor() {
+        List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet2), "alyssa");
+        
+        assertEquals("Expected no tweet by author",
+                Collections.emptyList(), writtenBy);
+    }
+    
+    
+    
     
     @Test
     public void testInTimespanMultipleTweetsMultipleResults() {

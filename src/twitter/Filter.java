@@ -3,7 +3,12 @@
  */
 package twitter;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Filter consists of methods that filter a list of tweets for those matching a
@@ -27,7 +32,16 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+        assert tweets != null;
+        assert username != null && username != "";
+        ArrayList<Tweet> t = new ArrayList<Tweet>();
+        
+        for (Tweet tweet:tweets) {
+        	if (tweet.getAuthor().equalsIgnoreCase(username)){
+        		t.add(tweet);
+        	}
+        }
+        return t;
     }
 
     /**
@@ -41,8 +55,31 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+    	assert tweets != null;
+        assert timespan != null;
+        
+        ArrayList<Tweet> timestamps = new ArrayList<Tweet>();
+        
+        for (Tweet tweet:tweets) {
+        	if (tweet.getTimestamp().isAfter(timespan.getStart())&&tweet.getTimestamp().isBefore(timespan.getEnd())){
+        		timestamps.add(tweet);
+        	}
+        }
+        return timestamps;
+        
+//        Predicate<Tweet> withinTimespan = tweet -> {
+//            Instant timestamp = tweet.getTimestamp();
+//            Instant start = timespan.getStart();
+//            Instant end = timespan.getEnd();
+//            
+//            return (timestamp.isAfter(start) && timestamp.isBefore(end)); 
+//        };
+//        
+//        return tweets.stream()
+//                .filter(withinTimespan)
+//                .collect(Collectors.toList());
     }
+
 
     /**
      * Find tweets that contain certain words.
@@ -60,7 +97,22 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+    	// TODO: better implementation
+//        Set<String> distinctWords = words.stream()
+//                .map(String::toLowerCase)
+//                .distinct()
+//                .collect(Collectors.toSet());
+    	ArrayList<Tweet> samewordtweet = new ArrayList<Tweet>();
+        
+        for (Tweet tweet:tweets) {
+        	String text = tweet.getText().toLowerCase();
+            for (String word: words) {
+                if (text.contains(word)) {
+            		samewordtweet.add(tweet);
+                }
+            }
+        }
+        return samewordtweet;
     }
 
 }
